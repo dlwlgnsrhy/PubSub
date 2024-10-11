@@ -17,7 +17,7 @@ Redis의 Pub/Sub 기능을 사용하여 간단한 실시간 메시지 처리 시
    - Redis 서버에서 클라이언트가 구독할 수 있는 채널을 생성하고, 해당 채널에 메시지를 발행합니다.
    - 구독한 클라이언트는 실시간으로 발행된 메시지를 수신합니다.
    
-2. **서버 구현 (Nest.js)**
+2. **서버 구현 (Nest.js)**
    - `ioredis` 패키지를 사용하여 Redis 서버와 연결하고, Pub/Sub 기능을 구현합니다.
    - `socket.io`를 사용하여 클라이언트와 실시간으로 메시지를 주고받는 WebSocket 서버를 설정합니다.
    
@@ -27,20 +27,29 @@ Redis의 Pub/Sub 기능을 사용하여 간단한 실시간 메시지 처리 시
 
 ### 코드 예시
 ```javascript
-// 서버 측 (Node.js)
-const Redis = require('ioredis');
-const redis = new Redis();
+// 서버 측 (Nest.js)
+ @WebSocketServer() server: Server;
 
-redis.subscribe('chat', (err, count) => {
-  console.log(`Subscribed to ${count} channel(s)`);
-});
+  private publisher: Redis;
+  private subscriber: Redis;
 
-redis.on('message', (channel, message) => {
-  console.log(`Received message: ${message} from channel: ${channel}`);
-});
+  constructor() {
+    this.publisher = new Redis({ host: 'localhost', port: 6379 });
+    this.subscriber = new Redis({ host: 'localhost', port: 6379 });
 
-// 메시지 발행
-redis.publish('chat', 'Hello World!');
+    // Redis 구독 채널 설정
+    this.subscriber.subscribe('chat-channel');
+    this.subscriber.on('message', (channel, message) => {
+      // 구독된 채널에서 메시지가 도착하면 WebSocket 클라이언트에 전송
+      this.server.emit('newMessage', message);
+    });
+  }
+
+  @SubscribeMessage('message')
+  handleMessage(@MessageBody() message: string): void {
+    // Redis 채널에 메시지 발행
+    this.publisher.publish('chat-channel', message);
+  }
 ```
 
 ```javascript
