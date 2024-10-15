@@ -94,6 +94,7 @@ socket.on('message', (message) => {
 ## Version
 - **Back-end**: Nest.js 10.0.0
 - **Front-end**: React 18.3.1
+- **DevOps**: Docker 4.34.3
 
 ## 실행 방식
 1. **서버 실행**
@@ -108,4 +109,7 @@ socket.on('message', (message) => {
      ```bash
      npm start
      ```
-     
+3. **Docker Compose 실행**
+   - Docker 컨테이너를 실행합니다.
+    ```bash
+    docker-compose up -d
