@@ -13,7 +13,6 @@ services:
   #Redis Commander
   redis-commander:
     image: rediscommander/redis-commander:latest
-    container_name: redis-commander
     environment:
       - REDIS_HOST=redis-server
     ports:
@@ -23,24 +22,24 @@ services:
     platform: linux/amd64  # x86 플랫폼에 맞추기
 
   #Nest.js 서비스 정의
-    nest-app:
+  nest-app:
     build:
-      context: ./backend
-      dockerfile: dockerfile
-      container_name: nest-app
-      ports:
-        - "4000:4000"
-      environment:
-        - "NODE_ENV=development"
-      depends_on:
-        - redis
-      volumes:
-        - ./backend:/pub-subproject
+      context: ./pub-sub-project
+      dockerfile: Dockerfile
+    container_name: nest-app
+    ports:
+      - "4000:4000"
+    environment:
+      - "NODE_ENV=development"
+    depends_on:
+      - redis
+    volumes:
+      - ./pub-sub-project:/pub-subproject
 
   #React 서비스 정의
   react-app:
     build: 
-      context: ./frontend
+      context: ./chat-app
       dockerfile: Dockerfile
     container_name: react-app
     ports:
@@ -48,7 +47,7 @@ services:
     depends_on:
       - nest-app
     volumes:
-      - ./frontend:/chat-app
+      - ./chat-app:/chat-app
 
 volumes:
   redis-data:

@@ -7,7 +7,7 @@ RUN npm install
 
 COPY . .
 
-RUN npm rnu build
+RUN npm run build
 
 FROM nginx:alpine
 COPY --from=build /chat-app/build /usr/share/nginx/html
