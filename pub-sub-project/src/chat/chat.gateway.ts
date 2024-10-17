@@ -12,7 +12,7 @@ import Redis from 'ioredis';
   cors: {
     origin: '*',
     methods: ['GET', 'POST'],
-    allowedHeaders: ['my-custom-header'], //뭔지 알아보자
+    allowedHeaders: ['my-custom-header'], //이후의 CORS설정 관련
     credential: true, //쿠키 허용
   },
 })

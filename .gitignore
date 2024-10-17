@@ -40,7 +40,7 @@ build/
 # Docker
 # docker-compose.yml
 .dockerignore
-Dockerfile
+# Dockerfile
 
 # TypeScript
 *.tsbuildinfo
